@@ -102,7 +102,7 @@ public class UDPServer {
                             users.get(receptor).sendMessage(user + ":" + client_message.substring(client_message.indexOf(":") + 1));
                             response = "Mensaje enviado al usuario";
                         }
-                    } catch (IndexOutOfBoundsException) {
+                    } catch (IndexOutOfBoundsException e) {
                         response = "Formato de mensaje incorrecto";
                     }
                 }
