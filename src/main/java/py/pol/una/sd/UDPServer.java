@@ -79,31 +79,31 @@ public class UDPServer {
                 byte[] send;
                 DatagramPacket send_packet;
 
+                if (user.isEmpty()) {
+                    user = client_message.trim();
 
-                if (client_message.startsWith("usuario:")) {
-                    /*
-                        TODO: agregar verificacion de que el nombre de usuario ingresado no se encuentra ya en el HashMap
-
-                     */
-                    user = client_message.substring(client_message.indexOf(':') + 1).trim();
-                    users.put(user, this);
-                    response = "Hola " + user;
-                }
-                else if (user.isEmpty()) {
-                    response = "Conectado al servidor. Ingrese 'usuario:(su usuario)'. Una vez ingresado el nombre de usuario, ingrese el nombre de usuario al que le quiera enviar un mensaje, seguido de " +
-                            ": y luego el mensaje, de esta forma: 'usuario':'mensaje'";
-                    // usuario: mensaje
+                    if (users.containsKey(user)) {
+                        response = "Ese nombre de usuario ya existe";
+                    }
+                    else {
+                        users.put(user, this);
+                        response = "Hola " + user;
+                    }
                 }
                 // le vamos a enviar un mensaje a otro usuario
                 else {
-                    // TODO: verificar que el mensaje tenga el formato requerido
-                    String receptor = client_message.substring(0, client_message.indexOf(":"));
-                    if (!users.containsKey(receptor)) {
-                        response = "El usuario no se encuentra conectado al servidor";
-                    }
-                    else {
-                        users.get(receptor).sendMessage(user + ":" + client_message.substring(client_message.indexOf(":") + 1));
-                        response = "Mensaje enviado al usuario";
+                    try {
+                        String receptor = client_message.substring(0, client_message.indexOf(":"));
+
+                        if (!users.containsKey(receptor)) {
+                            response = "El usuario no se encuentra conectado al servidor";
+                        }
+                        else {
+                            users.get(receptor).sendMessage(user + ":" + client_message.substring(client_message.indexOf(":") + 1));
+                            response = "Mensaje enviado al usuario";
+                        }
+                    } catch (IndexOutOfBoundsException) {
+                        response = "Formato de mensaje incorrecto";
                     }
                 }
                 send = response.getBytes();
