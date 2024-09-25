@@ -87,7 +87,7 @@ public class UDPServer {
                     }
                     else {
                         users.put(user, this);
-                        response = "Hola " + user;
+                        response = "server: Hola " + user;
                     }
                 }
                 // le vamos a enviar un mensaje a otro usuario
